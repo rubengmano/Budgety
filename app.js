@@ -74,7 +74,7 @@ var UIController = (function() {
         expensesContainer: '.expenses__list'
     }
 
-    // Make the get methods private
+    // Make the get methods public
     return {
         getInput: function(){
             return {
@@ -105,6 +105,30 @@ var UIController = (function() {
             document.querySelector(element).insertAdjacentHTML('beforeend', newHtml);
 
         },
+
+        // A method to clear the input fields
+        clearFields: function(){
+            var fields, fieldsArr;
+            // The syntax is like css selecting so to separate diferent selectors just use a ','
+            // the fields var is now a list
+            fields = document.querySelectorAll(DOMstrings.inputDescription + ', ' + DOMstrings.inputValue);
+
+            // tricks the slice function to receive a List and return an Array
+            // usually the slice function only receives and returns arrays
+            fieldsArr = Array.prototype.slice.call(fields);
+
+            // for each loop
+            // current -> current element being processed
+            // index number -> goes from zero to the length - 1
+            // array - entire array
+            fieldsArr.forEach(function(current, index, array){
+                current.value = "";
+            });
+
+            // set the focus on the first element of the array
+            fieldsArr[0].focus(); 
+        },
+
         // A method to return the DOM strings
         getDOMstrings: function(){
             return DOMstrings;
@@ -149,9 +173,12 @@ var controller = (function(budgetCtrl, IUCtrl){
         // 3. Add the new item to the user interface
         IUCtrl.addListItem(newItem, input.type);
 
-        // 4. Calculate the budget
+        // 4. Clear the fields
+        IUCtrl.clearFields();
 
-        // 5. Display the budget
+        // 5. Calculate the budget
+
+        // 6. Display the budget
     };
 
     // Making the init function public
@@ -166,5 +193,3 @@ var controller = (function(budgetCtrl, IUCtrl){
 
 // Start the application
 controller.init();
-
-//Gitkracken test
