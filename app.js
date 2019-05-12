@@ -80,7 +80,8 @@ var UIController = (function() {
             return {
                 type: document.querySelector(DOMstrings.inputType).value, // Will be either inc for income or exp for expenses
                 description: document.querySelector(DOMstrings.inputDescription).value, // To get the description
-                value: document.querySelector(DOMstrings.inputValue).value // To get the value
+                // Parse float converts a string into a decimal number
+                value: parseFloat(document.querySelector(DOMstrings.inputValue).value) // To get the value
             };   
         },
         addListItem: function(obj, type){
@@ -160,6 +161,15 @@ var controller = (function(budgetCtrl, IUCtrl){
         });
     };
 
+    var updateBudget = function(){
+
+        // 1. Calculate the budget
+
+        // 2. Return the budget
+
+        // 3. Display the budget
+    };
+
     // private add item function
     var ctrlAddItem = function(){
         var input, newItem;
@@ -167,18 +177,23 @@ var controller = (function(budgetCtrl, IUCtrl){
         input = IUCtrl.getInput();
         console.log(input);
 
-        // 2. Add the data to the budget controller
-        newItem = budgetCtrl.addItem(input.type, input.description, input.value);
+        // check if description field is filled
+        // check if value is in fact a value
+        // check if value is greater than 0
+        if(input.description !== "" && !isNaN(input.value) && input.value > 0){
+            // 2. Add the data to the budget controller
+            newItem = budgetCtrl.addItem(input.type, input.description, input.value);
 
-        // 3. Add the new item to the user interface
-        IUCtrl.addListItem(newItem, input.type);
+            // 3. Add the new item to the user interface
+            IUCtrl.addListItem(newItem, input.type);
 
-        // 4. Clear the fields
-        IUCtrl.clearFields();
+            // 4. Clear the fields
+            IUCtrl.clearFields();
 
-        // 5. Calculate the budget
+            // 5. Calculate and Update budget
+            updateBudget();
+        }
 
-        // 6. Display the budget
     };
 
     // Making the init function public
