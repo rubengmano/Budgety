@@ -14,6 +14,17 @@ var budgetController = (function() {
         this.value = value;
     }
 
+    // Private function to calculate the total of incomes or expenses depending on the type
+    var calculateTotal = function(type){
+        var sum = 0;
+        // Foreach to calculate the sum of all the elements of an array
+        data.allItems[type].forEach(function(cur){
+            sum += cur.value;
+        });
+        // Store the correspondent sum in the global data structure
+        data.totals[type] = sum;
+    }
+
     // An object to store all the data
     var data = {
         allItems: {
@@ -24,7 +35,9 @@ var budgetController = (function() {
         totals: {
             exp: 0,
             inc: 0
-        }
+        },
+        budget: 0,
+        percentage: -1
     };
 
     // public methods
@@ -51,6 +64,36 @@ var budgetController = (function() {
             return newItem;
 
         },
+
+        calculateBudget: function(){
+            
+            // Calculate total income and expenses 
+            calculateTotal('exp');
+            calculateTotal('inc');
+
+            // Calculate the budget: income - expenses
+            data.budget = data.totals.inc - data.totals.exp;
+
+            // Calculate the percentage of income that was spent
+            // Math.round() rounds the final number to the closer integer
+            // The if is necessary because it is not possible to devide by zero
+            if(data.totals.inc > 0){
+                data.percentage = Math.round((data.totals.exp / data.totals.inc) * 100);
+            } else {
+                data.percentage = -1;
+            }
+        },
+
+        // Function to return the budget data structure
+        getBudget: function(){
+            return {
+                budget: data.budget,
+                totalInc: data.totals.inc,
+                totalExp: data.totals.exp,
+                percentage: data.percentage
+            };
+        },
+
         test: function(){
             console.log(data);
         }
@@ -164,10 +207,13 @@ var controller = (function(budgetCtrl, IUCtrl){
     var updateBudget = function(){
 
         // 1. Calculate the budget
+        budgetCtrl.calculateBudget();
 
         // 2. Return the budget
+        var budget = budgetCtrl.getBudget();
 
         // 3. Display the budget
+        console.log(budget);
     };
 
     // private add item function
@@ -175,7 +221,6 @@ var controller = (function(budgetCtrl, IUCtrl){
         var input, newItem;
         // 1. Get the filed input data
         input = IUCtrl.getInput();
-        console.log(input);
 
         // check if description field is filled
         // check if value is in fact a value
